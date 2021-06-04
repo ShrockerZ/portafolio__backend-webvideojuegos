@@ -22,7 +22,7 @@ exports.Login=async (req,res)=>{
     const {user,password}= req.body;
     try {
         const exist=await  User.findOne({user});
-        if(!exist) res.json({error:'Usuario no existe'});
+        if(!exist) return  res.json({error:'Usuario no existe'});
         const passCorrect= await bcrypt.compareSync(password,exist.password);
         if(!passCorrect) return res.json({error:'Contraseña incorrecta'});
         const payload={

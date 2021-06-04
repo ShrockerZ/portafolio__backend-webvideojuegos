@@ -11,5 +11,4 @@ mongoose.connection.on('error',error=>{
 
 // modelos
 require('../models/User');
-
 module.exports=mongoose

@@ -1,4 +1,5 @@
 const User= require('../models/User');
+const bcrypt= require('bcryptjs');
 
 exports.getUser=async (req,res)=>{
     const user= req.user;
@@ -19,13 +20,18 @@ exports.getUser=async (req,res)=>{
 
 }   
 exports.updateUser=async (req,res)=>{
-    const user= req.user;
-    const {phrase,name,email} = req.body
+    const loguser= req.user;
+    const {phrase,name,email,user,password} = req.body
     try {
-        const currentUser= await User.findOne({user});
+        const currentUser= await User.findOne({user:loguser});
+        const passCorrect= await bcrypt.compareSync(password,currentUser.password);
+        if(!passCorrect) return res.status(400).json({error:'Contraseña incorrecta'});
+
+        if(user)    currentUser.user=user;
         if(phrase)  currentUser.phrase=phrase;
         if(name)    currentUser.name=name;
         if(email)   currentUser.email=email;
+
         const result=await currentUser.save();
         return res.status(200).json({error:null});
     } catch (error) {
